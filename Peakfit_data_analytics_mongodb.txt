@@ -1,0 +1,60 @@
+use peakfit_db
+
+// Question 1: Find all active members.
+db.members.find({ account_status: "Active" })
+
+// Question 2: Find the first and last names of all active members.
+db.members.find(
+  { account_status: "Active" },
+  { _id: 0, first_name: 1, last_name: 1 }
+)
+
+// Question 3: Find all members who joined after 2025-01-20.
+db.members.find({ join_date: { $gt: "2025-01-20" } })
+
+// Question 4: Count how many active members there are.
+db.members.countDocuments({ account_status: "Active" })
+
+// Question 5: Show all members sorted by join date from newest to oldest.
+db.members.find(
+  {},
+  { _id: 0, first_name: 1, last_name: 1, join_date: 1 }
+).sort({ join_date: -1 })
+
+// Question 6: Find all female members.
+db.members.find(
+  { gender: "Female" },
+  { _id: 0, first_name: 1, last_name: 1, gender: 1 }
+)
+
+// Question 7: Find all members who live in Bay City.
+db.members.find(
+  { address: /Bay City/i },
+  { _id: 0, first_name: 1, last_name: 1, address: 1 }
+)
+
+// Question 8: Count members by account status.
+db.members.aggregate([
+  {
+    $group: {
+      _id: "$account_status",
+      total: { $sum: 1 }
+    }
+  }
+])
+
+// Question 9: Count members by gender.
+db.members.aggregate([
+  {
+    $group: {
+      _id: "$gender",
+      total: { $sum: 1 }
+    }
+  }
+])
+
+// Question 10: Show the first name, last name, email, and phone number of all active members.
+db.members.find(
+  { account_status: "Active" },
+  { _id: 0, first_name: 1, last_name: 1, email: 1, phone: 1 }
+).sort({ last_name: 1 })
